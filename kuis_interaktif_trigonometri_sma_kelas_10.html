@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Persiapan Ujian Trigonometri - SMA Kelas 10</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <!-- KaTeX untuk Render Rumus Matematika yang Rapi -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Kustomisasi scrollbar halus */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .katex {
+            font-size: 1.05em;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.25s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col selection:bg-indigo-100 selection:text-indigo-900">
+
+    <!-- Header / Navbar -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+                    sin θ
+                </div>
+                <div>
+                    <h1 class="font-bold text-slate-900 text-base sm:text-lg leading-tight">Uji Kompetensi Trigonometri</h1>
+                    <p class="text-xs text-slate-500 hidden sm:block">Matematika Wajib Kelas X SMA • 30 Soal Persiapan Ujian</p>
+                </div>
+            </div>
+
+            <!-- Status & Actions -->
+            <div class="flex items-center gap-2 sm:gap-4">
+                <!-- Indikator Auto-Save -->
+                <div id="save-indicator" class="hidden md:flex items-center gap-1.5 text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full transition-opacity duration-300">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>Tersimpan Otomatis</span>
+                </div>
+
+                <!-- Skor Live -->
+                <div class="bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200 flex items-center gap-2">
+                    <span class="text-xs font-medium text-slate-500">Skor:</span>
+                    <span id="live-score" class="font-mono font-bold text-sm text-indigo-600">0</span>
+                    <span class="text-xs text-slate-400">/ 100</span>
+                </div>
+
+                <!-- Tombol Selesai / Rekap -->
+                <button onclick="openSummaryModal()" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-xs sm:text-sm font-semibold px-3.5 py-2 rounded-xl shadow-sm transition-all flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>Rekap Hasil</span>
+                </button>
+            </div>
+        </div>
+        <!-- Progress Bar Tipis di Bawah Header -->
+        <div class="w-full bg-slate-100 h-1.5">
+            <div id="top-progress-bar" class="bg-indigo-600 h-1.5 transition-all duration-300" style="width: 0%"></div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            <!-- Kolom Kiri: Area Soal Utama (8 Kolom di Desktop) -->
+            <div class="lg:col-span-8 flex flex-col gap-4">
+                
+                <!-- Kartu Soal -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-7 animate-fade-in" id="question-card">
+                    
+                    <!-- Meta Header Soal -->
+                    <div class="flex flex-wrap items-center justify-between gap-2 pb-4 mb-5 border-b border-slate-100">
+                        <div class="flex items-center gap-2.5">
+                            <span id="q-number-badge" class="bg-indigo-50 text-indigo-700 border border-indigo-200 font-bold text-sm px-3 py-1 rounded-lg">
+                                Soal 1 dari 30
+                            </span>
+                            <span id="q-category-badge" class="bg-slate-100 text-slate-600 text-xs font-medium px-2.5 py-1 rounded-lg">
+                                Kasus Nyata
+                            </span>
+                        </div>
+
+                        <!-- Tombol Tandai Ragu-ragu -->
+                        <button id="btn-flag" onclick="toggleFlag()" class="text-xs font-medium px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-amber-50 hover:text-amber-700 hover:border-amber-200 transition-colors flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"></path></svg>
+                            <span id="flag-text">Tandai Ragu</span>
+                        </button>
+                    </div>
+
+                    <!-- Ilustrasi SVG (Jika Ada) -->
+                    <div id="q-illustration" class="mb-5 hidden bg-slate-50 border border-slate-200/80 rounded-xl p-4 flex justify-center items-center">
+                        <!-- SVG diinjeksi via JS -->
+                    </div>
+
+                    <!-- Teks Pertanyaan -->
+                    <div id="q-text" class="text-slate-800 text-base sm:text-lg leading-relaxed font-medium mb-6">
+                        Memuat soal...
+                    </div>
+
+                    <!-- Pilihan Jawaban -->
+                    <div id="options-container" class="flex flex-col gap-3">
+                        <!-- Opsi diinjeksi via JS -->
+                    </div>
+
+                    <!-- Kotak Umpan Balik (Langsung Muncul Setelah Menjawab) -->
+                    <div id="feedback-box" class="hidden mt-6 rounded-xl p-4 sm:p-5 border transition-all animate-fade-in">
+                        <div class="flex items-start gap-3">
+                            <div id="feedback-icon" class="mt-0.5 shrink-0"></div>
+                            <div class="flex-1">
+                                <h4 id="feedback-title" class="font-bold text-base mb-1"></h4>
+                                <div id="feedback-explanation" class="text-sm leading-relaxed space-y-1.5"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Tombol Navigasi Bawah (Sebelumnya / Selanjutnya) -->
+                <div class="flex items-center justify-between gap-3 bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm">
+                    <button id="btn-prev" onclick="prevQuestion()" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-semibold text-sm hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none transition-all flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                        <span>Sebelumnya</span>
+                    </button>
+
+                    <span id="mobile-progress-text" class="text-xs font-medium text-slate-500">
+                        Terjawab: 0/30
+                    </span>
+
+                    <button id="btn-next" onclick="nextQuestion()" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm disabled:opacity-40 disabled:pointer-events-none transition-all flex items-center gap-2">
+                        <span>Selanjutnya</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Kolom Kanan: Panel Navigasi Nomor Soal (4 Kolom di Desktop) -->
+            <aside class="lg:col-span-4 bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sticky top-20">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="font-bold text-slate-800 text-sm uppercase tracking-wider">Navigasi Soal</h2>
+                    <span id="nav-answered-count" class="text-xs font-semibold bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-md">0 / 30 Selesai</span>
+                </div>
+
+                <!-- Grid Nomor 1 - 30 -->
+                <div id="nav-grid" class="grid grid-cols-5 sm:grid-cols-6 lg:grid-cols-5 gap-2 mb-5">
+                    <!-- Tombol nomor diinjeksi via JS -->
+                </div>
+
+                <!-- Legenda Warna -->
+                <div class="border-t border-slate-100 pt-4 space-y-2 text-xs text-slate-600">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3.5 h-3.5 rounded bg-emerald-500 inline-block shrink-0"></span>
+                            <span>Benar (<span id="count-correct">0</span>)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-3.5 h-3.5 rounded bg-rose-500 inline-block shrink-0"></span>
+                            <span>Salah (<span id="count-wrong">0</span>)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-3.5 h-3.5 rounded bg-amber-400 inline-block shrink-0"></span>
+                            <span>Ragu-ragu (<span id="count-flagged">0</span>)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-3.5 h-3.5 rounded bg-slate-100 border border-slate-300 inline-block shrink-0"></span>
+                            <span>Belum (<span id="count-unanswered">30</span>)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tombol Reset Kuis -->
+                <div class="mt-5 pt-4 border-t border-slate-100">
+                    <button onclick="openResetModal()" class="w-full py-2.5 px-4 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-semibold transition-colors flex items-center justify-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        <span>Reset & Acak Ulang Kuis</span>
+                    </button>
+                </div>
+            </aside>
+
+        </div>
+    </main>
+
+    <!-- Modal Konfirmasi Reset (Pengganti confirm() bawaan browser) -->
+    <div id="reset-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-200 animate-fade-in">
+            <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mb-4">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 mb-2">Mulai Ulang Kuis?</h3>
+            <p class="text-sm text-slate-600 mb-6 leading-relaxed">
+                Semua jawaban yang sudah tersimpan akan dihapus, skor kembali ke 0, dan urutan pilihan jawaban akan diacak kembali. Lanjutkan?
+            </p>
+            <div class="flex items-center justify-end gap-3">
+                <button onclick="closeResetModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 text-sm font-semibold hover:bg-slate-50">
+                    Batal
+                </button>
+                <button onclick="confirmResetQuiz()" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-sm font-semibold shadow-sm">
+                    Ya, Reset Kuis
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Rekap Hasil Ujian -->
+    <div id="summary-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-7 shadow-xl border border-slate-200 animate-fade-in max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-5">
+                <h3 class="text-xl font-bold text-slate-900">Rekap Hasil Latihan</h3>
+                <button onclick="closeSummaryModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <div class="text-center bg-indigo-50/70 border border-indigo-100 rounded-2xl p-6 mb-5">
+                <p class="text-xs font-semibold uppercase tracking-wider text-indigo-600 mb-1">Nilai Akhir Sementara</p>
+                <div class="text-5xl font-extrabold text-slate-900 font-mono mb-2" id="summary-score">0</div>
+                <p id="summary-predicate" class="text-sm font-medium text-slate-600">Terus berlatih untuk hasil maksimal!</p>
+            </div>
+
+            <div class="grid grid-cols-3 gap-3 mb-6 text-center">
+                <div class="bg-emerald-50 border border-emerald-200/70 rounded-xl p-3">
+                    <div class="text-xl font-bold text-emerald-700" id="sum-correct">0</div>
+                    <div class="text-xs text-emerald-600 font-medium">Benar</div>
+                </div>
+                <div class="bg-rose-50 border border-rose-200/70 rounded-xl p-3">
+                    <div class="text-xl font-bold text-rose-700" id="sum-wrong">0</div>
+                    <div class="text-xs text-rose-600 font-medium">Salah</div>
+                </div>
+                <div class="bg-slate-100 border border-slate-200 rounded-xl p-3">
+                    <div class="text-xl font-bold text-slate-700" id="sum-empty">30</div>
+                    <div class="text-xs text-slate-500 font-medium">Kosong</div>
+                </div>
+            </div>
+
+            <div id="summary-advice" class="text-sm text-slate-600 bg-slate-50 p-4 rounded-xl border border-slate-200/80 mb-6 leading-relaxed">
+                <!-- Saran evaluasi -->
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button onclick="closeSummaryModal()" class="flex-1 py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm text-center">
+                    Kembali ke Soal
+                </button>
+                <button onclick="closeSummaryModal(); openResetModal();" class="py-2.5 px-4 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold text-sm text-center">
+                    Ulangi dari Awal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * BANK SOAL TRIGONOMETRI KELAS 10 SMA (30 SOAL)
+         * Kategori:
+         * 1. Penerapan Kasus Nyata (Sudut Elevasi, Depresi, Tangga, Navigasi)
+         * 2. Sudut Berelasi & Sudut > 360 derajat (Kuadran I - IV & Periodisitas)
+         * 3. Perbandingan Trigonometri (sin, cos, tan, csc, sec, cot)
+         * 4. Operasi Aljabar & Identitas Dasar Trigonometri
+         */
+        const RAW_QUESTIONS = [
+            // --- BAGIAN 1: PENERAPAN KASUS NYATA (SOAL 1 - 10) ---
+            {
+                id: 1,
+                category: "Kasus Nyata • Sudut Elevasi",
+                text: "Sebuah tangga yang panjangnya $6\\text{ meter}$ disandarkan pada dinding vertikal sebuah gedung. Jika sudut yang dibentuk oleh kaki tangga dengan lantai mendatar adalah $60^\\circ$, berapakah tinggi ujung atas tangga dari permukaan lantai?",
+                svg: `<svg viewBox="0 0 260 150" class="w-full max-w-[240px] h-auto">
+                        <line x1="40" y1="130" x2="220" y2="130" stroke="#64748b" stroke-width="3"/>
+                        <line x1="180" y1="20" x2="180" y2="130" stroke="#475569" stroke-width="4"/>
+                        <line x1="85" y1="130" x2="180" y2="30" stroke="#4f46e5" stroke-width="3.5" stroke-linecap="round"/>
+                        <path d="M 110 130 A 25 25 0 0 0 103 111" fill="none" stroke="#e11d48" stroke-width="2"/>
+                        <text x="115" y="122" font-size="11" fill="#e11d48" font-weight="bold">60°</text>
+                        <text x="108" y="72" font-size="11" fill="#4f46e5" font-weight="bold" transform="rotate(-46 108 72)">6 m</text>
+                        <text x="188" y="80" font-size="11" fill="#334155" font-weight="bold">t = ?</text>
+                      </svg>`,
+                options: [
+                    "$3\\sqrt{3}\\text{ meter}$",
+                    "$3\\text{ meter}$",
+                    "$3\\sqrt{2}\\text{ meter}$",
+                    "$6\\sqrt{3}\\text{ meter}$",
+                    "$2\\sqrt{3}\\text{ meter}$"
+                ],
+                correctIndex: 0,
+                explanation: "Tinggi dinding ($t$) berada di <strong>depan</strong> sudut $60^\\circ$, sedangkan panjang tangga ($6\\text{ m}$) adalah sisi <strong>miring</strong>.<br>Gunakan perbandingan sinus: $\\sin 60^\\circ = \\frac{\\text{depan}}{\\text{miring}} = \\frac{t}{6}$.<br>$\\frac{1}{2}\\sqrt{3} = \\frac{t}{6} \\Rightarrow t = 6 \\times \\frac{1}{2}\\sqrt{3} = 3\\sqrt{3}\\text{ meter}$."
+            },
+            {
+                id: 2,
+                category: "Kasus Nyata • Mengukur Tinggi",
+                text: "Seorang siswa dengan tinggi badan $160\\text{ cm}$ berdiri pada jarak $12\\text{ meter}$ dari kaki sebuah tiang bendera. Ia melihat puncak tiang bendera dengan sudut elevasi $45^\\circ$. Tinggi tiang bendera tersebut adalah...",
+                svg: `<svg viewBox="0 0 280 150" class="w-full max-w-[260px] h-auto">
+                        <line x1="20" y1="135" x2="260" y2="135" stroke="#64748b" stroke-width="2"/>
+                        <line x1="210" y1="20" x2="210" y2="135" stroke="#0f172a" stroke-width="3"/>
+                        <line x1="70" y1="105" x2="70" y2="135" stroke="#4f46e5" stroke-width="3"/>
+                        <circle cx="70" cy="100" r="4" fill="#4f46e5"/>
+                        <line x1="70" y1="105" x2="210" y2="105" stroke="#94a3b8" stroke-dasharray="4" stroke-width="1.5"/>
+                        <line x1="70" y1="105" x2="210" y2="20" stroke="#e11d48" stroke-width="2"/>
+                        <text x="105" y="99" font-size="11" fill="#e11d48" font-weight="bold">45°</text>
+                        <text x="125" y="147" font-size="11" fill="#475569">12 m</text>
+                        <text x="32" y="123" font-size="10" fill="#4f46e5">1,6 m</text>
+                      </svg>`,
+                options: [
+                    "$13,6\\text{ meter}$",
+                    "$12,0\\text{ meter}$",
+                    "$12\\sqrt{3}\\text{ meter}$",
+                    "$14,6\\text{ meter}$",
+                    "$13,2\\text{ meter}$"
+                ],
+                correctIndex: 0,
+                explanation: "Tinggi siswa $= 160\\text{ cm} = 1,6\\text{ meter}$.<br>Misal tinggi tiang di atas garis pandang mata adalah $x$.<br>$\\tan 45^\\circ = \\frac{x}{12} \\Rightarrow 1 = \\frac{x}{12} \\Rightarrow x = 12\\text{ meter}$.<br>Tinggi total tiang $= 12 + 1,6 = 13,6\\text{ meter}$."
+            },
+            {
+                id: 3,
+                category: "Kasus Nyata • Sudut Depresi",
+                text: "Dari puncak sebuah mercusuar setinggi $45\\text{ meter}$ di atas permukaan laut, penjaga melihat sebuah kapal nelayan dengan sudut depresi $30^\\circ$. Jarak mendatar kapal tersebut dari kaki mercusuar adalah...",
+                options: [
+                    "$45\\sqrt{3}\\text{ meter}$",
+                    "$15\\sqrt{3}\\text{ meter}$",
+                    "$45\\text{ meter}$",
+                    "$90\\text{ meter}$",
+                    "$22,5\\sqrt{3}\\text{ meter}$"
+                ],
+                correctIndex: 0,
+                explanation: "Sudut depresi dari atas ke bawah sama besar dengan sudut elevasi dari kapal ke puncak mercusuar (sudut dalam berseberangan), yaitu $30^\\circ$.<br>$\\tan 30^\\circ = \\frac{\\text{tinggi mercusuar}}{\\text{jarak kapal}} = \\frac{45}{d}$.<br>$\\frac{1}{3}\\sqrt{3} = \\frac{45}{d} \\Rightarrow d = \\frac{45}{\\frac{1}{3}\\sqrt{3}} = \\frac{135}{\\sqrt{3}} = 45\\sqrt{3}\\text{ meter}$."
+            },
+            {
+                id: 4,
+                category: "Kasus Nyata • Penerbangan",
+                text: "Sebuah pesawat lepas landas membentuk sudut $30^\\circ$ terhadap landasan pacu yang mendatar. Jika pesawat telah menempuh lintasan udara sejauh $2,4\\text{ km}$, ketinggian pesawat saat itu adalah...",
+                options: [
+                    "$1.200\\text{ meter}$",
+                    "$1.200\\sqrt{3}\\text{ meter}$",
+                    "$2.400\\sqrt{2}\\text{ meter}$",
+                    "$800\\sqrt{3}\\text{ meter}$",
+                    "$600\\text{ meter}$"
+                ],
+                correctIndex: 0,
+                explanation: "Jarak lintasan udara adalah sisi miring $= 2,4\\text{ km} = 2.400\\text{ meter}$.<br>Ketinggian pesawat ($h$) adalah sisi depan sudut $30^\\circ$.<br>$\\sin 30^\\circ = \\frac{h}{2.400} \\Rightarrow \\frac{1}{2} = \\frac{h}{2.400} \\Rightarrow h = 1.200\\text{ meter}$."
+            },
+            {
+                id: 5,
+                category: "Kasus Nyata • Bayangan Benda",
+                text: "Pada saat sudut elevasi sinar matahari mencapai $60^\\circ$, panjang bayangan sebuah pohon di atas tanah datar adalah $8\\text{ meter}$. Tinggi pohon sebenarnya adalah...",
+                options: [
+                    "$8\\sqrt{3}\\text{ meter}$",
+                    "$\\frac{8}{3}\\sqrt{3}\\text{ meter}$",
+                    "$16\\text{ meter}$",
+                    "$4\\sqrt{3}\\text{ meter}$",
+                    "$8\\sqrt{2}\\text{ meter}$"
+                ],
+                correctIndex: 0,
+                explanation: "Panjang bayangan berada di tanah (sisi samping sudut $60^\\circ$) dan tinggi pohon adalah sisi depan.<br>$\\tan 60^\\circ = \\frac{\\text{tinggi pohon}}{\\text{bayangan}} = \\frac{t}{8}$.<br>$\\sqrt{3} = \\frac{t}{8} \\Rightarrow t = 8\\sqrt{3}\\text{ meter}$."
+            },
+            {
+                id: 6,
+                category: "Kasus Nyata • Dua Pengamat",
+                text: "Rina dan Dika berdiri segaris di sebelah barat sebuah menara. Rina melihat puncak menara dengan sudut elevasi $30^\\circ$, sedangkan Dika (yang berdiri lebih dekat ke menara) melihatnya dengan sudut elevasi $60^\\circ$. Jika tinggi menara $30\\sqrt{3}\\text{ meter}$, jarak antara Rina dan Dika adalah...",
+                options: [
+                    "$60\\text{ meter}$",
+                    "$30\\text{ meter}$",
+                    "$45\\text{ meter}$",
+                    "$30\\sqrt{3}\\text{ meter}$",
+                    "$90\\text{ meter}$"
+                ],
+                correctIndex: 0,
+                explanation: "Jarak Dika ke menara ($x_1$): $\\tan 60^\\circ = \\frac{30\\sqrt{3}}{x_1} \\Rightarrow \\sqrt{3} = \\frac{30\\sqrt{3}}{x_1} \\Rightarrow x_1 = 30\\text{ m}$.<br>Jarak Rina ke menara ($x_2$): $\\tan 30^\\circ = \\frac{30\\sqrt{3}}{x_2} \\Rightarrow \\frac{1}{\\sqrt{3}} = \\frac{30\\sqrt{3}}{x_2} \\Rightarrow x_2 = 90\\text{ m}$.<br>Jarak Rina dan Dika $= x_2 - x_1 = 90 - 30 = 60\\text{ meter}$."
+            },
+            {
+                id: 7,
+                category: "Kasus Nyata • Navigasi Kapal",
+                text: "Sebuah kapal berlayar dari pelabuhan A ke arah timur sejauh $40\\text{ km}$, kemudian berbelok ke arah utara sejauh $40\\sqrt{3}\\text{ km}$ hingga tiba di pelabuhan B. Besar sudut arah pelabuhan B diukur dari arah timur pelabuhan A adalah...",
+                options: [
+                    "$60^\\circ$",
+                    "$30^\\circ$",
+                    "$45^\\circ$",
+                    "$53^\\circ$",
+                    "$37^\\circ$"
+                ],
+                correctIndex: 0,
+                explanation: "Lintasan ke timur ($40\\text{ km}$) adalah sisi samping sudut $\\theta$, dan lintasan ke utara ($40\\sqrt{3}\\text{ km}$) adalah sisi depan sudut $\\theta$.<br>$\\tan \\theta = \\frac{40\\sqrt{3}}{40} = \\sqrt{3} \\Rightarrow \\theta = 60^\\circ$."
+            },
+            {
+                id: 8,
+                category: "Kasus Nyata • Layang-layang",
+                text: "Budi bermain layang-layang dengan panjang benang yang terulur $100\\text{ meter}$ dan dianggap lurus. Jika sudut yang dibentuk benang dengan tanah horizontal adalah $53^\\circ$ (diketahui $\\sin 53^\\circ \\approx 0,8$ dan $\\cos 53^\\circ \\approx 0,6$), maka perkiraan tinggi layang-layang dari tanah (tinggi tangan Budi diabaikan) adalah...",
+                options: [
+                    "$80\\text{ meter}$",
+                    "$60\\text{ meter}$",
+                    "$75\\text{ meter}$",
+                    "$50\\text{ meter}$",
+                    "$85\\text{ meter}$"
+                ],
+                correctIndex: 0,
+                explanation: "Gunakan perbandingan sinus karena diketahui sisi miring (panjang benang $= 100\\text{ m}$) dan ditanya sisi depan (tinggi $= h$).<br>$\\sin 53^\\circ = \\frac{h}{100} \\Rightarrow 0,8 = \\frac{h}{100} \\Rightarrow h = 80\\text{ meter}$."
+            },
+            {
+                id: 9,
+                category: "Kasus Nyata • Jalan Menanjak",
+                text: "Sebuah jalan raya menanjak lurus dengan sudut kemiringan $15^\\circ$ terhadap bidang datar. Jika sebuah mobil menempuh jarak $500\\text{ meter}$ sepanjang jalan tanjakan tersebut, kenaikan ketinggian mobil dapat dinyatakan dalam rumus...",
+                options: [
+                    "$500 \\cdot \\sin 15^\\circ\\text{ meter}$",
+                    "$500 \\cdot \\cos 15^\\circ\\text{ meter}$",
+                    "$500 \\cdot \\tan 15^\\circ\\text{ meter}$",
+                    "$\\frac{500}{\\sin 15^\\circ}\\text{ meter}$",
+                    "$\\frac{500}{\\cos 15^\\circ}\\text{ meter}$"
+                ],
+                correctIndex: 0,
+                explanation: "Jalan tanjakan merupakan sisi miring ($500\\text{ m}$), sedangkan kenaikan ketinggian ($\\Delta h$) merupakan sisi depan sudut $15^\\circ$.<br>$\\sin 15^\\circ = \\frac{\\Delta h}{500} \\Rightarrow \\Delta h = 500 \\cdot \\sin 15^\\circ\\text{ meter}$."
+            },
+            {
+                id: 10,
+                category: "Kasus Nyata • Jembatan & Sungai",
+                text: "Untuk mengukur lebar sungai tanpa menyeberanginya, Andi menandai pohon P tepat di seberang sungai. Lalu ia berjalan menyusuri tepi sungai sejauh $20\\text{ meter}$ ke titik Q dan mengukur sudut $\\angle PQT = 60^\\circ$ (dengan T adalah posisi awal Andi). Lebar sungai tersebut adalah...",
+                options: [
+                    "$20\\sqrt{3}\\text{ meter}$",
+                    "$\\frac{20}{3}\\sqrt{3}\\text{ meter}$",
+                    "$10\\sqrt{3}\\text{ meter}$",
+                    "$40\\text{ meter}$",
+                    "$20\\sqrt{2}\\text{ meter}$"
+                ],
+                correctIndex: 0,
+                explanation: "Segitiga $PTQ$ siku-siku di $T$. Lebar sungai $PT$ adalah sisi depan sudut $60^\\circ$, dan jarak $TQ = 20\\text{ m}$ adalah sisi samping.<br>$\\tan 60^\\circ = \\frac{PT}{TQ} \\Rightarrow \\sqrt{3} = \\frac{PT}{20} \\Rightarrow PT = 20\\sqrt{3}\\text{ meter}$."
+            },
+
+            // --- BAGIAN 2: PERBANDINGAN TRIGONOMETRI & KOORDINAT (SOAL 11 - 16) ---
+            {
+                id: 11,
+                category: "Perbandingan • Segitiga Siku-siku",
+                text: "Diketahui $\\triangle ABC$ siku-siku di $B$. Jika panjang sisi $AB = 8\\text{ cm}$ dan $BC = 15\\text{ cm}$, maka nilai dari $\\sec A + \\tan C$ adalah...",
+                options: [
+                    "$\\frac{341}{120}$",
+                    "$\\frac{23}{17}$",
+                    "$\\frac{17}{8}$",
+                    "$\\frac{25}{15}$",
+                    "$\\frac{319}{120}$"
+                ],
+                correctIndex: 0,
+                explanation: "Sisi miring $AC = \\sqrt{AB^2 + BC^2} = \\sqrt{8^2 + 15^2} = \\sqrt{64 + 225} = \\sqrt{289} = 17\\text{ cm}$.<br>$\\sec A = \\frac{\\text{miring}}{\\text{samping } A} = \\frac{AC}{AB} = \\frac{17}{8}$.<br>$\\tan C = \\frac{\\text{depan } C}{\\text{samping } C} = \\frac{AB}{BC} = \\frac{8}{15}$.<br>$\\sec A + \\tan C = \\frac{17}{8} + \\frac{8}{15} = \\frac{255 + 64}{120} = \\frac{319}{120}$."
+            },
+            {
+                id: 12,
+                category: "Perbandingan • Kuadran",
+                text: "Diketahui $\\cos \\alpha = -\\frac{5}{13}$ dengan sudut $\\alpha$ berada di Kuadran II ($90^\\circ < \\alpha < 180^\\circ$). Nilai dari $\\csc \\alpha \\cdot \\cot \\alpha$ adalah...",
+                options: [
+                    "$-\\frac{65}{144}$",
+                    "$\\frac{65}{144}$",
+                    "$-\\frac{13}{12}$",
+                    "$-\\frac{169}{60}$",
+                    "$\\frac{60}{169}$"
+                ],
+                correctIndex: 0,
+                explanation: "Di Kuadran II, $\\sin \\alpha$ dan $\\csc \\alpha$ bernilai <strong>positif</strong>, sedangkan $\\cos \\alpha, \\tan \\alpha, \\cot \\alpha$ bernilai <strong>negatif</strong>.<br>Dari $\\cos \\alpha = -\\frac{5}{13}$, sisi samping $= 5$, miring $= 13$, maka sisi depan $= \\sqrt{13^2 - 5^2} = 12$.<br>$\\csc \\alpha = \\frac{13}{12}$ dan $\\cot \\alpha = -\\frac{5}{12}$.<br>Jadi, $\\csc \\alpha \\cdot \\cot \\alpha = \\left(\\frac{13}{12}\\right) \\cdot \\left(-\\frac{5}{12}\\right) = -\\frac{65}{144}$."
+            },
+            {
+                id: 13,
+                category: "Perbandingan • Titik Koordinat",
+                text: "Titik $P(-7, -24)$ terletak pada sisi akhir sudut $\\theta$ dalam posisi baku. Nilai dari $\\sin \\theta + \\cos \\theta$ adalah...",
+                options: [
+                    "$-\\frac{31}{25}$",
+                    "$\\frac{31}{25}$",
+                    "$-\\frac{17}{25}$",
+                    "$\\frac{17}{25}$",
+                    "$-\\frac{24}{7}$"
+                ],
+                correctIndex: 0,
+                explanation: "Diketahui $x = -7$ dan $y = -24$ (Kuadran III).<br>Jari-jari $r = \\sqrt{x^2 + y^2} = \\sqrt{(-7)^2 + (-24)^2} = \\sqrt{49 + 576} = \\sqrt{625} = 25$.<br>$\\sin \\theta = \\frac{y}{r} = -\\frac{24}{25}$ dan $\\cos \\theta = \\frac{x}{r} = -\\frac{7}{25}$.<br>$\\sin \\theta + \\cos \\theta = -\\frac{24}{25} + \\left(-\\frac{7}{25}\\right) = -\\frac{31}{25}$."
+            },
+            {
+                id: 14,
+                category: "Perbandingan • Sudut Kuadran IV",
+                text: "Jika $\\tan \\beta = -\\sqrt{3}$ dan $270^\\circ < \\beta < 360^\\circ$, maka nilai dari $\\sec \\beta$ adalah...",
+                options: [
+                    "$2$",
+                    "$-2$",
+                    "$\\frac{2}{3}\\sqrt{3}$",
+                    "$-\\frac{2}{3}\\sqrt{3}$",
+                    "$\\sqrt{3}$"
+                ],
+                correctIndex: 0,
+                explanation: "Sudut $\\beta$ berada di Kuadran IV, sehingga $\\cos \\beta$ dan $\\sec \\beta$ bernilai <strong>positif</strong>.<br>$\\tan \\beta = -\\sqrt{3} = \\frac{-\\sqrt{3}}{1}$ (depan $= \\sqrt{3}$, samping $= 1$, miring $= \\sqrt{(\\sqrt{3})^2 + 1^2} = 2$).<br>$\\sec \\beta = \\frac{\\text{miring}}{\\text{samping}} = \\frac{2}{1} = 2$."
+            },
+            {
+                id: 15,
+                category: "Perbandingan • Bentuk Variabel",
+                text: "Diketahui $\\sin 25^\\circ = p$. Bentuk aljabar dari $\\tan 25^\\circ$ yang dinyatakan dalam $p$ adalah...",
+                options: [
+                    "$\\frac{p}{\\sqrt{1 - p^2}}$",
+                    "$\\frac{\\sqrt{1 - p^2}}{p}$",
+                    "$\\frac{1}{\\sqrt{1 - p^2}}$",
+                    "$p\\sqrt{1 - p^2}$",
+                    "$\\frac{p}{1 - p^2}$"
+                ],
+                correctIndex: 0,
+                explanation: "$\\sin 25^\\circ = \\frac{p}{1} = \\frac{\\text{depan}}{\\text{miring}}$.<br>Dengan teorema Pythagoras, sisi samping $= \\sqrt{1^2 - p^2} = \\sqrt{1 - p^2}$.<br>Maka $\\tan 25^\\circ = \\frac{\\text{depan}}{\\text{samping}} = \\frac{p}{\\sqrt{1 - p^2}}$."
+            },
+            {
+                id: 16,
+                category: "Perbandingan • Sudut Istimewa",
+                text: "Nilai eksak dari $\\sec 30^\\circ \\cdot \\csc 60^\\circ - \\cot 45^\\circ$ adalah...",
+                options: [
+                    "$\\frac{1}{3}$",
+                    "$\\frac{7}{3}$",
+                    "$1$",
+                    "$\\frac{4}{3}\\sqrt{3} - 1$",
+                    "$-\\frac{1}{3}$"
+                ],
+                correctIndex: 0,
+                explanation: "$\\sec 30^\\circ = \\frac{1}{\\cos 30^\\circ} = \\frac{1}{\\frac{1}{2}\\sqrt{3}} = \\frac{2}{\\sqrt{3}}$.<br>$\\csc 60^\\circ = \\frac{1}{\\sin 60^\\circ} = \\frac{1}{\\frac{1}{2}\\sqrt{3}} = \\frac{2}{\\sqrt{3}}$.<br>$\\cot 45^\\circ = 1$.<br>Hasil $= \\left(\\frac{2}{\\sqrt{3}} \\cdot \\frac{2}{\\sqrt{3}}\\right) - 1 = \\frac{4}{3} - 1 = \\frac{1}{3}$."
+            },
+
+            // --- BAGIAN 3: SUDUT BERELASI & SUDUT > 360 DERAJAT (SOAL 17 - 24) ---
+            {
+                id: 17,
+                category: "Sudut Berelasi • Kuadran II & III",
+                text: "Nilai dari $\\sin 150^\\circ + \\cos 240^\\circ$ adalah...",
+                options: [
+                    "$0$",
+                    "$1$",
+                    "$-1$",
+                    "$\\sqrt{3}$",
+                    "$-\\frac{1}{2}$"
+                ],
+                correctIndex: 0,
+                explanation: "$\\sin 150^\\circ = \\sin(180^\\circ - 30^\\circ) = +\\sin 30^\\circ = \\frac{1}{2}$ (Kuadran II, sin positif).<br>$\\cos 240^\\circ = \\cos(180^\\circ + 60^\\circ) = -\\cos 60^\\circ = -\\frac{1}{2}$ (Kuadran III, cos negatif).<br>Jadi, $\\frac{1}{2} + \\left(-\\frac{1}{2}\\right) = 0$."
+            },
+            {
+                id: 18,
+                category: "Sudut Berelasi • Sudut > 360°",
+                text: "Tentukan nilai dari $\\cos 420^\\circ$!",
+                options: [
+                    "$\\frac{1}{2}$",
+                    "$-\\frac{1}{2}$",
+                    "$\\frac{1}{2}\\sqrt{3}$",
+                    "$-\\frac{1}{2}\\sqrt{3}$",
+                    "$\\frac{1}{2}\\sqrt{2}$"
+                ],
+                correctIndex: 0,
+                explanation: "Gunakan sifat periodisitas $\\cos(k \\cdot 360^\\circ + \\alpha) = \\cos \\alpha$.<br>$\\cos 420^\\circ = \\cos(1 \\cdot 360^\\circ + 60^\\circ) = \\cos 60^\\circ = \\frac{1}{2}$."
+            },
+            {
+                id: 19,
+                category: "Sudut Berelasi • Sudut > 360°",
+                text: "Nilai dari $\\tan 765^\\circ$ adalah...",
+                options: [
+                    "$1$",
+                    "$-1$",
+                    "$\\sqrt{3}$",
+                    "$\\frac{1}{3}\\sqrt{3}$",
+                    "$0$"
+                ],
+                correctIndex: 0,
+                explanation: "Bagi $765^\\circ$ dengan $360^\\circ$: $765^\\circ = 2 \\times 360^\\circ + 45^\\circ = 720^\\circ + 45^\\circ$.<br>Maka $\\tan 765^\\circ = \\tan 45^\\circ = 1$."
+            },
+            {
+                id: 20,
+                category: "Sudut Berelasi • Sudut > 360°",
+                text: "Nilai eksak dari $\\sin 930^\\circ$ adalah...",
+                options: [
+                    "$-\\frac{1}{2}$",
+                    "$\\frac{1}{2}$",
+                    "$-\\frac{1}{2}\\sqrt{3}$",
+                    "$\\frac{1}{2}\\sqrt{3}$",
+                    "$-1$"
+                ],
+                correctIndex: 0,
+                explanation: "$930^\\circ = 2 \\times 360^\\circ + 210^\\circ = 720^\\circ + 210^\\circ$.<br>$\\sin 930^\\circ = \\sin 210^\\circ$.<br>Karena $210^\\circ$ di Kuadran III: $\\sin(180^\\circ + 30^\\circ) = -\\sin 30^\\circ = -\\frac{1}{2}$."
+            },
+            {
+                id: 21,
+                category: "Sudut Berelasi • Secan & Cosecan",
+                text: "Nilai dari $\\sec 600^\\circ$ adalah...",
+                options: [
+                    "$-2$",
+                    "$2$",
+                    "$-\\frac{2}{3}\\sqrt{3}$",
+                    "$\\frac{2}{3}\\sqrt{3}$",
+                    "$-\\sqrt{2}$"
+                ],
+                correctIndex: 0,
+                explanation: "$600^\\circ = 360^\\circ + 240^\\circ$.<br>$\\sec 600^\\circ = \\sec 240^\\circ = \\frac{1}{\\cos 240^\\circ}$.<br>$\\cos 240^\\circ = \\cos(180^\\circ + 60^\\circ) = -\\cos 60^\\circ = -\\frac{1}{2}$.<br>Maka $\\sec 600^\\circ = \\frac{1}{-\\frac{1}{2}} = -2$."
+            },
+            {
+                id: 22,
+                category: "Sudut Berelasi • Sudut > 1000°",
+                text: "Hitunglah nilai dari $\\csc 1125^\\circ$!",
+                options: [
+                    "$\\sqrt{2}$",
+                    "$-\\sqrt{2}$",
+                    "$\\frac{1}{2}\\sqrt{2}$",
+                    "$2$",
+                    "$-2$"
+                ],
+                correctIndex: 0,
+                explanation: "$1125^\\circ = 3 \\times 360^\\circ + 45^\\circ = 1080^\\circ + 45^\\circ$.<br>$\\csc 1125^\\circ = \\csc 45^\\circ = \\frac{1}{\\sin 45^\\circ} = \\frac{1}{\\frac{1}{2}\\sqrt{2}} = \\sqrt{2}$."
+            },
+            {
+                id: 23,
+                category: "Sudut Berelasi • Sudut Negatif",
+                text: "Nilai dari $\\sin(-300^\\circ) + \\cos(-330^\\circ)$ adalah...",
+                options: [
+                    "$\\sqrt{3}$",
+                    "$0$",
+                    "$-\\sqrt{3}$",
+                    "$1$",
+                    "$\\frac{1}{2}\\sqrt{3}$"
+                ],
+                correctIndex: 0,
+                explanation: "Gunakan identitas sudut negatif: $\\sin(-\\alpha) = -\\sin \\alpha$ dan $\\cos(-\\alpha) = \\cos \\alpha$.<br>$\\sin(-300^\\circ) = -\\sin 300^\\circ = -(-\\sin 60^\\circ) = +\\frac{1}{2}\\sqrt{3}$.<br>$\\cos(-330^\\circ) = \\cos 330^\\circ = +\\cos 30^\\circ = +\\frac{1}{2}\\sqrt{3}$.<br>Jumlahnya $= \\frac{1}{2}\\sqrt{3} + \\frac{1}{2}\\sqrt{3} = \\sqrt{3}$."
+            },
+            {
+                id: 24,
+                category: "Sudut Berelasi • Cotangen > 360°",
+                text: "Nilai dari $\\cot 870^\\circ$ adalah...",
+                options: [
+                    "$-\\sqrt{3}$",
+                    "$\\sqrt{3}$",
+                    "$-\\frac{1}{3}\\sqrt{3}$",
+                    "$\\frac{1}{3}\\sqrt{3}$",
+                    "$-1$"
+                ],
+                correctIndex: 0,
+                explanation: "$870^\\circ = 2 \\times 360^\\circ + 150^\\circ = 720^\\circ + 150^\\circ$.<br>$\\cot 870^\\circ = \\cot 150^\\circ$.<br>Di Kuadran II, $\\cot(180^\\circ - 30^\\circ) = -\\cot 30^\\circ = -\\sqrt{3}$."
+            },
+
+            // --- BAGIAN 4: OPERASI TRIGONOMETRI & IDENTITAS (SOAL 25 - 30) ---
+            {
+                id: 25,
+                category: "Operasi Trigonometri • Pecahan",
+                text: "Hasil dari $\\frac{\\sin 120^\\circ \\cdot \\cos 330^\\circ}{\\tan 225^\\circ}$ adalah...",
+                options: [
+                    "$\\frac{3}{4}$",
+                    "$-\\frac{3}{4}$",
+                    "$\\frac{1}{4}$",
+                    "$\\frac{3}{2}$",
+                    "$-\\frac{1}{4}$"
+                ],
+                correctIndex: 0,
+                explanation: "$\\sin 120^\\circ = \\sin(180^\\circ - 60^\\circ) = \\frac{1}{2}\\sqrt{3}$.<br>$\\cos 330^\\circ = \\cos(360^\\circ - 30^\\circ) = \\frac{1}{2}\\sqrt{3}$.<br>$\\tan 225^\\circ = \\tan(180^\\circ + 45^\\circ) = 1$.<br>Hasil $= \\frac{\\frac{1}{2}\\sqrt{3} \\cdot \\frac{1}{2}\\sqrt{3}}{1} = \\frac{3}{4}$."
+            },
+            {
+                id: 26,
+                category: "Operasi Trigonometri • Sudut > 360°",
+                text: "Hitunglah nilai dari $\\sin 480^\\circ \\cdot \\cos 750^\\circ + \\cos 390^\\circ \\cdot \\sin 840^\\circ$!",
+                options: [
+                    "$\\frac{3}{2}$",
+                    "$1$",
+                    "$\\frac{1}{2}$",
+                    "$0$",
+                    "$\\frac{3}{4}$"
+                ],
+                correctIndex: 0,
+                explanation: "Sederhanakan tiap sudut dengan kelipatan $360^\\circ$:<br>• $\\sin 480^\\circ = \\sin(360^\\circ + 120^\\circ) = \\sin 120^\\circ = \\frac{1}{2}\\sqrt{3}$<br>• $\\cos 750^\\circ = \\cos(720^\\circ + 30^\\circ) = \\cos 30^\\circ = \\frac{1}{2}\\sqrt{3}$<br>• $\\cos 390^\\circ = \\cos(360^\\circ + 30^\\circ) = \\cos 30^\\circ = \\frac{1}{2}\\sqrt{3}$<br>• $\\sin 840^\\circ = \\sin(720^\\circ + 120^\\circ) = \\sin 120^\\circ = \\frac{1}{2}\\sqrt{3}$<br>Total $= \\left(\\frac{1}{2}\\sqrt{3} \\cdot \\frac{1}{2}\\sqrt{3}\\right) + \\left(\\frac{1}{2}\\sqrt{3} \\cdot \\frac{1}{2}\\sqrt{3}\\right) = \\frac{3}{4} + \\frac{3}{4} = \\frac{6}{4} = \\frac{3}{2}$."
+            },
+            {
+                id: 27,
+                category: "Operasi Trigonometri • Kuadrat",
+                text: "Nilai dari $\\sin^2 135^\\circ + \\cos^2 225^\\circ - \\tan^2 300^\\circ$ adalah...",
+                options: [
+                    "$-2$",
+                    "$2$",
+                    "$-1$",
+                    "$4$",
+                    "$-\\frac{5}{2}$"
+                ],
+                correctIndex: 0,
+                explanation: "$\\sin 135^\\circ = \\frac{1}{2}\\sqrt{2} \\Rightarrow \\sin^2 135^\\circ = \\left(\\frac{1}{2}\\sqrt{2}\\right)^2 = \\frac{2}{4} = \\frac{1}{2}$.<br>$\\cos 225^\\circ = -\\frac{1}{2}\\sqrt{2} \\Rightarrow \\cos^2 225^\\circ = \\left(-\\frac{1}{2}\\sqrt{2}\\right)^2 = \\frac{1}{2}$.<br>$\\tan 300^\\circ = -\\sqrt{3} \\Rightarrow \\tan^2 300^\\circ = (-\\sqrt{3})^2 = 3$.<br>Hasil $= \\frac{1}{2} + \\frac{1}{2} - 3 = 1 - 3 = -2$."
+            },
+            {
+                id: 28,
+                category: "Identitas Trigonometri",
+                text: "Bentuk sederhana dari ekspresi $(\\sin x + \\cos x)^2 - 2\\sin x \\cos x$ adalah...",
+                options: [
+                    "$1$",
+                    "$0$",
+                    "$2$",
+                    "$\\sin^2 x$",
+                    "$\\cos^2 x$"
+                ],
+                correctIndex: 0,
+                explanation: "Jabarkan bentuk kuadrat:<br>$(\\sin x + \\cos x)^2 - 2\\sin x \\cos x = (\\sin^2 x + 2\\sin x \\cos x + \\cos^2 x) - 2\\sin x \\cos x$.<br>$= \\sin^2 x + \\cos^2 x$.<br>Berdasarkan identitas dasar Pythagoras trigonometri, $\\sin^2 x + \\cos^2 x = 1$."
+            },
+            {
+                id: 29,
+                category: "Operasi Trigonometri • Radian",
+                text: "Nilai dari $\\sin \\frac{7\\pi}{6} + \\cos \\frac{4\\pi}{3} - \\tan \\frac{5\\pi}{4}$ adalah...",
+                options: [
+                    "$-2$",
+                    "$0$",
+                    "$-1$",
+                    "$1$",
+                    "$2$"
+                ],
+                correctIndex: 0,
+                explanation: "Konversikan radian ke derajat ($\\pi = 180^\\circ$):<br>• $\\frac{7\\pi}{6} = 210^\\circ \\Rightarrow \\sin 210^\\circ = -\\frac{1}{2}$<br>• $\\frac{4\\pi}{3} = 240^\\circ \\Rightarrow \\cos 240^\\circ = -\\frac{1}{2}$<br>• $\\frac{5\\pi}{4} = 225^\\circ \\Rightarrow \\tan 225^\\circ = 1$<br>Hasil $= -\\frac{1}{2} + \\left(-\\frac{1}{2}\\right) - 1 = -1 - 1 = -2$."
+            },
+            {
+                id: 30,
+                category: "Operasi Aljabar Trigonometri",
+                text: "Diketahui $\\sin x - \\cos x = \\frac{1}{2}$. Nilai dari $\\sin x \\cdot \\cos x$ adalah...",
+                options: [
+                    "$\\frac{3}{8}$",
+                    "$\\frac{1}{4}$",
+                    "$\\frac{3}{4}$",
+                    "$\\frac{5}{8}$",
+                    "$\\frac{1}{8}$"
+                ],
+                correctIndex: 0,
+                explanation: "Kuadratkan kedua ruas persamaan $\\sin x - \\cos x = \\frac{1}{2}$:<br>$(\\sin x - \\cos x)^2 = \\left(\\frac{1}{2}\\right)^2$<br>$\\sin^2 x - 2\\sin x \\cos x + \\cos^2 x = \\frac{1}{4}$<br>Karena $\\sin^2 x + \\cos^2 x = 1$, maka:<br>$1 - 2\\sin x \\cos x = \\frac{1}{4}$<br>$2\\sin x \\cos x = 1 - \\frac{1}{4} = \\frac{3}{4} \\Rightarrow \\sin x \\cos x = \\frac{3}{8}$."
+            }
+        ];
+
+        // Kunci penyimpanan di peramban (Persistence Key)
+        const STORAGE_KEY = "trigo_sma10_quiz_state_v1";
+
+        // State Aplikasi
+        let quizState = {
+            currentIndex: 0,
+            // Menyimpan opsi yang sudah diacak per soal agar posisi jawaban benar tidak berpola
+            // Format: { [questionId]: { shuffledOptions: [string], correctShuffledIndex: number } }
+            questionMeta: {},
+            // Menyimpan jawaban user: { [questionId]: selectedShuffledIndex }
+            answers: {},
+            // Menyimpan status ragu-ragu: { [questionId]: boolean }
+            flagged: {}
+        };
+
+        /**
+         * Algoritma Fisher-Yates Shuffle untuk mengacak pilihan jawaban tanpa pola
+         */
+        function shuffleOptionsForQuestion(question) {
+            const indexedOptions = question.options.map((text, idx) => ({
+                text,
+                isCorrect: idx === question.correctIndex
+            }));
+
+            for (let i = indexedOptions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [indexedOptions[i], indexedOptions[j]] = [indexedOptions[j], indexedOptions[i]];
+            }
+
+            return {
+                shuffledOptions: indexedOptions.map(o => o.text),
+                correctShuffledIndex: indexedOptions.findIndex(o => o.isCorrect)
+            };
+        }
+
+        /**
+         * Inisialisasi atau Muat State dari Penyimpanan Peramban
+         */
+        function initQuiz() {
+            try {
+                const saved = window.localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (parsed && parsed.questionMeta && Object.keys(parsed.questionMeta).length === RAW_QUESTIONS.length) {
+                        quizState = parsed;
+                    } else {
+                        generateFreshQuizState();
+                    }
+                } else {
+                    generateFreshQuizState();
+                }
+            } catch (e) {
+                console.warn("Penyimpanan lokal tidak tersedia, menggunakan memori sementara:", e);
+                generateFreshQuizState();
+            }
+
+            renderNavGrid();
+            renderQuestion(quizState.currentIndex);
+            updateStats();
+        }
+
+        function generateFreshQuizState() {
+            const meta = {};
+            RAW_QUESTIONS.forEach(q => {
+                meta[q.id] = shuffleOptionsForQuestion(q);
+            });
+            quizState = {
+                currentIndex: 0,
+                questionMeta: meta,
+                answers: {},
+                flagged: {}
+            };
+            saveState();
+        }
+
+        /**
+         * Simpan state ke localStorage agar tahan terhadap reload / putus jaringan
+         */
+        function saveState() {
+            try {
+                window.localStorage.setItem(STORAGE_KEY, JSON.stringify(quizState));
+                const indicator = document.getElementById('save-indicator');
+                if (indicator) {
+                    indicator.classList.remove('opacity-50');
+                    indicator.classList.add('opacity-100');
+                }
+            } catch (e) {
+                console.warn("Gagal menyimpan state:", e);
+            }
+        }
+
+        /**
+         * Render Matematika dengan KaTeX
+         */
+        function renderMathInElementSafe(el) {
+            if (window.renderMathInElement && el) {
+                renderMathInElement(el, {
+                    delimiters: [
+                        { left: '$$', right: '$$', display: true },
+                        { left: '$', right: '$', display: false }
+                    ],
+                    throwOnError: false
+                });
+            }
+        }
+
+        /**
+         * Render Soal Berdasarkan Index
+         */
+        function renderQuestion(index) {
+            quizState.currentIndex = index;
+            saveState();
+
+            const question = RAW_QUESTIONS[index];
+            const meta = quizState.questionMeta[question.id];
+            const userAnswer = quizState.answers[question.id];
+            const isAnswered = userAnswer !== undefined;
+            const isFlagged = !!quizState.flagged[question.id];
+
+            // Update Header Meta Soal
+            document.getElementById('q-number-badge').textContent = `Soal ${index + 1} dari ${RAW_QUESTIONS.length}`;
+            document.getElementById('q-category-badge').textContent = question.category;
+
+            // Update Tombol Ragu-ragu
+            const btnFlag = document.getElementById('btn-flag');
+            const flagText = document.getElementById('flag-text');
+            if (isFlagged) {
+                btnFlag.className = "text-xs font-semibold px-3 py-1.5 rounded-lg border border-amber-300 bg-amber-100 text-amber-800 transition-colors flex items-center gap-1.5";
+                flagText.textContent = "Ditandai Ragu";
+            } else {
+                btnFlag.className = "text-xs font-medium px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-amber-50 hover:text-amber-700 hover:border-amber-200 transition-colors flex items-center gap-1.5";
+                flagText.textContent = "Tandai Ragu";
+            }
+
+            // Ilustrasi SVG (jika ada)
+            const illContainer = document.getElementById('q-illustration');
+            if (question.svg) {
+                illContainer.innerHTML = question.svg;
+                illContainer.classList.remove('hidden');
+            } else {
+                illContainer.innerHTML = '';
+                illContainer.classList.add('hidden');
+            }
+
+            // Teks Soal
+            const qTextEl = document.getElementById('q-text');
+            qTextEl.innerHTML = question.text;
+
+            // Render Pilihan Jawaban (A, B, C, D, E)
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            const letters = ['A', 'B', 'C', 'D', 'E'];
+
+            meta.shuffledOptions.forEach((optText, optIdx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+
+                let baseClasses = "w-full text-left p-3.5 sm:p-4 rounded-xl border-2 transition-all flex items-center gap-3.5 group ";
+                let badgeClasses = "w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm shrink-0 transition-colors ";
+
+                if (!isAnswered) {
+                    baseClasses += "border-slate-200 bg-white hover:border-indigo-400 hover:bg-indigo-50/40 cursor-pointer active:scale-[0.99]";
+                    badgeClasses += "bg-slate-100 text-slate-700 group-hover:bg-indigo-600 group-hover:text-white";
+                } else {
+                    btn.disabled = true;
+                    if (optIdx === meta.correctShuffledIndex) {
+                        // Opsi Benar
+                        baseClasses += "border-emerald-500 bg-emerald-50/80 text-emerald-950";
+                        badgeClasses += "bg-emerald-600 text-white";
+                    } else if (optIdx === userAnswer) {
+                        // Opsi Salah yang dipilih user
+                        baseClasses += "border-rose-500 bg-rose-50/80 text-rose-950";
+                        badgeClasses += "bg-rose-600 text-white";
+                    } else {
+                        // Opsi lain
+                        baseClasses += "border-slate-200/70 bg-slate-50/50 text-slate-400 opacity-75";
+                        badgeClasses += "bg-slate-200/70 text-slate-500";
+                    }
+                }
+
+                btn.className = baseClasses;
+                btn.innerHTML = `
+                    <span class="${badgeClasses}">${letters[optIdx]}</span>
+                    <span class="flex-1 text-sm sm:text-base font-medium leading-snug">${optText}</span>
+                    ${isAnswered && optIdx === meta.correctShuffledIndex ? '<svg class="w-5 h-5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>' : ''}
+                    ${isAnswered && optIdx === userAnswer && optIdx !== meta.correctShuffledIndex ? '<svg class="w-5 h-5 text-rose-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>' : ''}
+                `;
+
+                if (!isAnswered) {
+                    btn.onclick = () => selectAnswer(optIdx);
+                }
+
+                optionsContainer.appendChild(btn);
+            });
+
+            // Tampilkan / Sembunyikan Kotak Umpan Balik Langsung
+            const feedbackBox = document.getElementById('feedback-box');
+            if (isAnswered) {
+                const isCorrect = userAnswer === meta.correctShuffledIndex;
+                feedbackBox.classList.remove('hidden');
+
+                if (isCorrect) {
+                    feedbackBox.className = "mt-6 rounded-xl p-4 sm:p-5 border border-emerald-200 bg-emerald-50/90 text-emerald-900 animate-fade-in";
+                    document.getElementById('feedback-icon').innerHTML = `<div class="w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg></div>`;
+                    document.getElementById('feedback-title').textContent = "Jawaban Benar! Kerja Bagus.";
+                    document.getElementById('feedback-title').className = "font-bold text-base mb-1 text-emerald-800";
+                } else {
+                    const correctLetter = letters[meta.correctShuffledIndex];
+                    feedbackBox.className = "mt-6 rounded-xl p-4 sm:p-5 border border-rose-200 bg-rose-50/90 text-rose-900 animate-fade-in";
+                    document.getElementById('feedback-icon').innerHTML = `<div class="w-7 h-7 rounded-full bg-rose-600 text-white flex items-center justify-center"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg></div>`;
+                    document.getElementById('feedback-title').textContent = `Kurang Tepat! Jawaban yang benar adalah ${correctLetter}.`;
+                    document.getElementById('feedback-title').className = "font-bold text-base mb-1 text-rose-800";
+                }
+
+                document.getElementById('feedback-explanation').innerHTML = `<strong>Pembahasan:</strong><br>${question.explanation}`;
+            } else {
+                feedbackBox.classList.add('hidden');
+            }
+
+            // Update Tombol Prev / Next
+            document.getElementById('btn-prev').disabled = index === 0;
+            document.getElementById('btn-next').disabled = index === RAW_QUESTIONS.length - 1;
+
+            // Update Grid Navigasi
+            renderNavGrid();
+
+            // Render Rumus KaTeX pada area kartu soal
+            renderMathInElementSafe(document.getElementById('question-card'));
+        }
+
+        /**
+         * Handler Ketika Siswa Memilih Jawaban
+         */
+        function selectAnswer(selectedOptionIndex) {
+            const question = RAW_QUESTIONS[quizState.currentIndex];
+            // Cegah perubahan jawaban jika sudah dijawab
+            if (quizState.answers[question.id] !== undefined) return;
+
+            quizState.answers[question.id] = selectedOptionIndex;
+            saveState();
+
+            renderQuestion(quizState.currentIndex);
+            updateStats();
+        }
+
+        /**
+         * Toggle Status Ragu-ragu
+         */
+        function toggleFlag() {
+            const question = RAW_QUESTIONS[quizState.currentIndex];
+            quizState.flagged[question.id] = !quizState.flagged[question.id];
+            saveState();
+            renderQuestion(quizState.currentIndex);
+            updateStats();
+        }
+
+        /**
+         * Navigasi Soal
+         */
+        function prevQuestion() {
+            if (quizState.currentIndex > 0) {
+                renderQuestion(quizState.currentIndex - 1);
+            }
+        }
+
+        function nextQuestion() {
+            if (quizState.currentIndex < RAW_QUESTIONS.length - 1) {
+                renderQuestion(quizState.currentIndex + 1);
+            }
+        }
+
+        function jumpToQuestion(index) {
+            renderQuestion(index);
+        }
+
+        /**
+         * Render Grid Nomor Navigasi (1 - 30)
+         */
+        function renderNavGrid() {
+            const grid = document.getElementById('nav-grid');
+            grid.innerHTML = '';
+
+            RAW_QUESTIONS.forEach((q, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.textContent = idx + 1;
+
+                const isCurrent = idx === quizState.currentIndex;
+                const userAnswer = quizState.answers[q.id];
+                const isAnswered = userAnswer !== undefined;
+                const isFlagged = !!quizState.flagged[q.id];
+                const meta = quizState.questionMeta[q.id];
+
+                let classes = "h-10 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center justify-center relative ";
+
+                if (isAnswered) {
+                    const isCorrect = userAnswer === meta.correctShuffledIndex;
+                    if (isCorrect) {
+                        classes += "bg-emerald-500 text-white hover:bg-emerald-600 shadow-xs ";
+                    } else {
+                        classes += "bg-rose-500 text-white hover:bg-rose-600 shadow-xs ";
+                    }
+                } else if (isFlagged) {
+                    classes += "bg-amber-400 text-amber-950 hover:bg-amber-500 ";
+                } else {
+                    classes += "bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200/70 ";
+                }
+
+                if (isCurrent) {
+                    classes += "ring-2 ring-offset-2 ring-indigo-600 scale-105 z-10 ";
+                }
+
+                btn.className = classes;
+                btn.onclick = () => jumpToQuestion(idx);
+
+                // Titik kecil jika ditandai ragu-ragu tapi sudah dijawab
+                if (isFlagged && isAnswered) {
+                    const dot = document.createElement('span');
+                    dot.className = "w-2 h-2 rounded-full bg-amber-300 border border-slate-900 absolute -top-0.5 -right-0.5";
+                    btn.appendChild(dot);
+                }
+
+                grid.appendChild(btn);
+            });
+        }
+
+        /**
+         * Hitung & Update Statistik Skor dan Progres
+         */
+        function updateStats() {
+            let correct = 0;
+            let wrong = 0;
+            let flagged = 0;
+
+            RAW_QUESTIONS.forEach(q => {
+                const ans = quizState.answers[q.id];
+                if (ans !== undefined) {
+                    if (ans === quizState.questionMeta[q.id].correctShuffledIndex) {
+                        correct++;
+                    } else {
+                        wrong++;
+                    }
+                }
+                if (quizState.flagged[q.id]) {
+                    flagged++;
+                }
+            });
+
+            const total = RAW_QUESTIONS.length;
+            const answered = correct + wrong;
+            const unanswered = total - answered;
+            const score = Math.round((correct / total) * 100);
+            const progressPercent = (answered / total) * 100;
+
+            document.getElementById('live-score').textContent = score;
+            document.getElementById('top-progress-bar').style.width = `${progressPercent}%`;
+            document.getElementById('nav-answered-count').textContent = `${answered} / ${total} Selesai`;
+            document.getElementById('mobile-progress-text').textContent = `Terjawab: ${answered}/${total}`;
+
+            document.getElementById('count-correct').textContent = correct;
+            document.getElementById('count-wrong').textContent = wrong;
+            document.getElementById('count-flagged').textContent = flagged;
+            document.getElementById('count-unanswered').textContent = unanswered;
+
+            return { correct, wrong, unanswered, score, total };
+        }
+
+        /**
+         * Kontrol Modal Reset
+         */
+        function openResetModal() {
+            const modal = document.getElementById('reset-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeResetModal() {
+            const modal = document.getElementById('reset-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function confirmResetQuiz() {
+            try {
+                window.localStorage.removeItem(STORAGE_KEY);
+            } catch (e) {}
+            generateFreshQuizState();
+            renderNavGrid();
+            renderQuestion(0);
+            updateStats();
+            closeResetModal();
+        }
+
+        /**
+         * Kontrol Modal Rekap Hasil
+         */
+        function openSummaryModal() {
+            const stats = updateStats();
+            document.getElementById('summary-score').textContent = stats.score;
+            document.getElementById('sum-correct').textContent = stats.correct;
+            document.getElementById('sum-wrong').textContent = stats.wrong;
+            document.getElementById('sum-empty').textContent = stats.unanswered;
+
+            const predicateEl = document.getElementById('summary-predicate');
+            const adviceEl = document.getElementById('summary-advice');
+
+            if (stats.score >= 85) {
+                predicateEl.textContent = "Luar Biasa! Siap Menghadapi Ujian!";
+                predicateEl.className = "text-sm font-bold text-emerald-700";
+                adviceEl.innerHTML = "Penguasaan konsep perbandingan trigonometri, sudut berelasi di atas $360^\\circ$, serta penerapan soal cerita kamu sudah sangat matang. Pertahankan ketelitianmu!";
+            } else if (stats.score >= 70) {
+                predicateEl.textContent = "Bagus! Sedikit Lagi Sempurna.";
+                predicateEl.className = "text-sm font-bold text-indigo-700";
+                adviceEl.innerHTML = "Pemahaman dasarmu sudah baik. Periksa kembali soal-soal yang masih salah pada navigasi berwarna merah dan pelajari langkah pembahasannya.";
+            } else {
+                predicateEl.textContent = "Ayo Terus Berlatih!";
+                predicateEl.className = "text-sm font-bold text-amber-700";
+                adviceEl.innerHTML = "Jangan menyerah! Pastikan kamu hafal nilai sudut istimewa ($0^\\circ, 30^\\circ, 45^\\circ, 60^\\circ, 90^\\circ$), tanda positif/negatif tiap kuadran (<strong>Semua - Sin - Tan - Cos</strong>), serta cara mereduksi sudut kelipatan $360^\\circ$.";
+            }
+
+            const modal = document.getElementById('summary-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            renderMathInElementSafe(modal);
+        }
+
+        function closeSummaryModal() {
+            const modal = document.getElementById('summary-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Navigasi Keyboard (Panah Kiri & Kanan)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') prevQuestion();
+            if (e.key === 'ArrowRight') nextQuestion();
+        });
+
+        // Jalankan kuis saat halaman selesai dimuat
+        window.addEventListener('DOMContentLoaded', () => {
+            initQuiz();
+            // Pastikan KaTeX ter-render setelah script defer selesai
+            setTimeout(() => {
+                renderMathInElementSafe(document.body);
+            }, 300);
+        });
+    </script>
+</body>
+</html>
